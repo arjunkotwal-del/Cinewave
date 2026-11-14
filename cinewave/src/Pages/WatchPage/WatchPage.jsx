@@ -10,16 +10,22 @@ const WatchPage = () => {
   const { mediaType, title, id } = useParams();
 
   const isTV = mediaType === "tv";
-  const [mode, setMode] = useState("stream");
+  const [source, setSource] = useState("vidsrc");
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
 
-  const query = isTV
+  const vidsrcUrl = isTV
+    ? `https://vidsrc.mov/embed/tv/${id}/${season}/${episode}`
+    : `https://vidsrc.mov/embed/movie/${id}`;
+
+  const vidmarioQuery = isTV
     ? "primarycolor=e50914&iconcolor=ffffff&autonext=true"
     : "primarycolor=e50914&iconcolor=ffffff";
-  const embedUrl = isTV
-    ? `https://player.vidmario.net/embed/tv/${id}/${season}/${episode}?${query}`
-    : `https://player.vidmario.net/embed/movie/${id}?${query}`;
+  const vidmarioUrl = isTV
+    ? `https://player.vidmario.net/embed/tv/${id}/${season}/${episode}?${vidmarioQuery}`
+    : `https://player.vidmario.net/embed/movie/${id}?${vidmarioQuery}`;
+
+  const embedUrl = source === "vidmario" ? vidmarioUrl : vidsrcUrl;
 
   const opts = {
     height: "100%",
@@ -43,7 +49,7 @@ const WatchPage = () => {
         </div>
 
         <div className="watch-controls">
-          {mode === "stream" && isTV && (
+          {source !== "trailer" && isTV && (
             <div className="episode-picker">
               <label>
                 S
@@ -69,16 +75,23 @@ const WatchPage = () => {
           <div className="mode-toggle" role="group" aria-label="Player source">
             <button
               type="button"
-              className={mode === "stream" ? "active" : ""}
-              onClick={() => setMode("stream")}
+              className={source === "vidsrc" ? "active" : ""}
+              onClick={() => setSource("vidsrc")}
             >
-              Watch Full
+              Server 1
+            </button>
+            <button
+              type="button"
+              className={source === "vidmario" ? "active" : ""}
+              onClick={() => setSource("vidmario")}
+            >
+              Server 2
             </button>
             {data?.key && (
               <button
                 type="button"
-                className={mode === "trailer" ? "active" : ""}
-                onClick={() => setMode("trailer")}
+                className={source === "trailer" ? "active" : ""}
+                onClick={() => setSource("trailer")}
               >
                 Trailer
               </button>
@@ -88,12 +101,12 @@ const WatchPage = () => {
       </header>
 
       <div className="video-container">
-        {mode === "stream" ? (
+        {source !== "trailer" ? (
           <iframe
             key={embedUrl}
             className="player-frame"
             src={embedUrl}
-            title={title || "VidMario Player"}
+            title={title || "Video Player"}
             allowFullScreen
             allow="autoplay; fullscreen; picture-in-picture"
           />
