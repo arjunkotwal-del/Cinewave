@@ -14,11 +14,12 @@ const WatchPage = () => {
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
 
-  const safeTitle = encodeURIComponent(title || "CineWave");
-  const vidriftParams = `title=${safeTitle}&brand=CineWave&showTitle=1`;
+  const query = isTV
+    ? "primarycolor=e50914&iconcolor=ffffff&autonext=true"
+    : "primarycolor=e50914&iconcolor=ffffff";
   const embedUrl = isTV
-    ? `https://embed.vidrift.net/embed/tv/${id}/${season}/${episode}?${vidriftParams}`
-    : `https://embed.vidrift.net/embed/movie/${id}?${vidriftParams}`;
+    ? `https://player.vidmario.net/embed/tv/${id}/${season}/${episode}?${query}`
+    : `https://player.vidmario.net/embed/movie/${id}?${query}`;
 
   const opts = {
     height: "100%",
@@ -90,11 +91,11 @@ const WatchPage = () => {
         {mode === "stream" ? (
           <iframe
             key={embedUrl}
-            className="vidrift-frame"
+            className="player-frame"
             src={embedUrl}
-            title={title || "VidRift Player"}
+            title={title || "VidMario Player"}
             allowFullScreen
-            allow="autoplay; fullscreen"
+            allow="autoplay; fullscreen; picture-in-picture"
           />
         ) : (
           <YouTube className="yt" videoId={data?.key} opts={opts} loading="lazy" />
