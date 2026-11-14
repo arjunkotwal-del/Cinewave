@@ -79,7 +79,7 @@ const CTAButtons = ({ mediaType, movie, featured }) => {
         <Link to={`/watch/${mediaType}/${title}/${movie?.id}`}>
           <button>
             <HiMiniPlay className="icon play" />
-            <span>Watch Now</span>
+            <span>Watch Trailer</span>
           </button>
         </Link>
       )}
